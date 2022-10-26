@@ -3,20 +3,16 @@ import { StyleSheet, Text, View, SafeAreaView, SectionList, StatusBar } from "re
 
 const DATA = [
     {
-        title: "Main dishes",
-        data: ["Pizza", "Burger", "Risotto"]
+        title: "魏国",
+        data: ["曹操", "司马懿", "张辽"]
     },
     {
-        title: "Sides",
-        data: ["French Fries", "Onion Rings", "Fried Shrimps"]
+        title: "蜀国",
+        data: ["刘备", "关羽", "张飞"]
     },
     {
-        title: "Drinks",
-        data: ["Water", "Coke", "Beer"]
-    },
-    {
-        title: "Desserts",
-        data: ["Cheese Cake", "Ice Cream"]
+        title: "吴国",
+        data: ["孙权", "周瑜", "黄盖"]
     }
 ];
 
@@ -26,7 +22,33 @@ Item = ({ title }) => (
     </View>
 );
 
+
 class App extends Component {
+    constructor() { 
+        super()
+
+        this.state = {
+            isFresh: false
+        }
+    }
+
+    loadData = () => {
+        // 开启加载动画
+        this.setState({
+            isFresh: true
+        })
+
+        // 模拟请求数据
+        setTimeout(() => {
+            this.setState({
+                isFresh: false
+            })
+            alert('下拉刷新')
+        }, 2000);
+    }
+
+
+
     render() {
         return (
             <SafeAreaView style={styles.container}>
@@ -37,6 +59,34 @@ class App extends Component {
                     renderSectionHeader={({ section: { title } }) => (
                         <Text style={styles.header}>{title}</Text>
                     )}
+                    ItemSeparatorComponent={() => { 
+                        // 声明项目之间的分隔符
+                        return <View style={{borderBottomWidth: 1, borderBottomColor: 'red'}}></View>
+                    }}
+                    ListEmptyComponent={() => {
+                        return <Text style={{fontSize:30}}>空空如也</Text>
+                    }}
+
+                    // 下拉刷新
+                    refreshing={this.state.isFresh}
+                    onRefresh={this.loadData}
+
+                    // 上拉刷新
+                    onEndReachedThreshold={0.1}  // 声明触底的比率，0.1表示距离底部还有10%
+                    onEndReached={() => {
+                        // alert('到底了')
+                    }}
+
+                    ListHeaderComponent={() => {
+                        // 声明列表的头部组件
+                        return <Text style={{fontSize: 40}}>三国英雄榜</Text>
+                    }}
+
+                    ListFooterComponent={() => {
+                        // 声明列表的尾部组件
+                        return <Text style={{ fontSize: 30 }}>没有更多了</Text>
+                    }}
+
                 />
             </SafeAreaView>
         );
